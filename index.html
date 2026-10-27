@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ألعاب الأطفال</title>
+<meta name="description" content="ألعاب بسيطة للأطفال تنلعب مباشرة بدون تسجيل دخول">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff8e7; --ink:#3b2f5c; --card:#fff; --muted:#7a6f99;
+  --shadow:0 6px 0 rgba(59,47,92,.15);
+  --c1:#ff6b6b; --c2:#4dabf7; --c3:#51cf66; --c4:#f59f00; --c5:#cc5de8; --c6:#ff922b; --c7:#f06595;
+  --ok:#2f9e44; --no:#e03131;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{
+  font-family:'Baloo Bhaijaan 2',system-ui,sans-serif; background:var(--bg); color:var(--ink); min-height:100vh;
+  background-image:
+    radial-gradient(circle at 8% 18%,#ffe3e3 0 60px,transparent 61px),
+    radial-gradient(circle at 92% 72%,#d0ebff 0 90px,transparent 91px),
+    radial-gradient(circle at 70% 8%,#d3f9d8 0 50px,transparent 51px),
+    radial-gradient(circle at 20% 88%,#fff3bf 0 70px,transparent 71px);
+  background-attachment:fixed;
+}
+button{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;max-width:960px;margin:auto}
+h1{margin:0;font-size:clamp(26px,7vw,42px);font-weight:800;line-height:1.1}
+.head-tools{display:flex;gap:10px;align-items:center}
+.pill{background:var(--card);border-radius:999px;padding:6px 16px;font-weight:700;font-size:20px;box-shadow:var(--shadow);white-space:nowrap}
+.icon-btn{border:0;background:var(--card);border-radius:16px;font-size:24px;width:50px;height:50px;box-shadow:var(--shadow);cursor:pointer}
+
+main{max-width:960px;margin:auto;padding:0 16px 48px}
+.screen{display:none}
+.screen.on{display:block;animation:fade .25s}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}}
+
+.hello{font-size:20px;color:var(--muted);margin:4px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.tile{display:block;border-radius:26px;padding:18px 10px;color:#fff;font-size:22px;font-weight:800;text-align:center;box-shadow:var(--shadow);transition:transform .15s}
+.tile span{display:block;font-size:58px;line-height:1.25}
+.tile small{display:block;font-size:15px;font-weight:500;opacity:.92}
+.tile:hover{transform:translateY(-3px) rotate(-1deg)}
+.tile:active{transform:scale(.95)}
+footer{text-align:center;color:var(--muted);margin-top:28px;font-size:16px}
+
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.bar h2{margin:0;font-size:clamp(24px,6vw,32px)}
+.back{background:var(--card);border-radius:16px;padding:6px 16px;font-weight:700;font-size:20px;box-shadow:var(--shadow)}
+.bar .pill{font-size:18px}
+.btn{border:0;border-radius:18px;padding:10px 22px;font-size:20px;font-weight:800;color:#fff;background:var(--c2);box-shadow:var(--shadow);cursor:pointer}
+.btn:active{transform:scale(.96)}
+.center{text-align:center}
+
+/* memory */
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:520px;margin:auto}
+.mcard{aspect-ratio:1;border:0;border-radius:18px;font-size:clamp(30px,9vw,52px);background:var(--c5);color:#fff;box-shadow:var(--shadow);cursor:pointer;padding:0}
+.mcard .bk{display:none}
+.mcard.open{background:#fff;animation:flip .25s}
+.mcard.open .fr{display:none}
+.mcard.open .bk{display:inline}
+.mcard.done{background:#d3f9d8}
+@keyframes flip{50%{transform:scaleX(.1)}}
+
+/* balloons */
+.sky{position:relative;height:62vh;min-height:380px;overflow:hidden;border-radius:26px;background:linear-gradient(#a5d8ff,#e7f5ff);user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:var(--shadow)}
+.balloon{position:absolute;bottom:-120px;width:64px;height:104px;cursor:pointer;animation:rise linear forwards}
+.bi{width:64px;height:80px;border-radius:50% 50% 46% 46%/56% 56% 44% 44%;position:relative;box-shadow:inset -9px -10px 0 rgba(0,0,0,.13)}
+.bi::after{content:'';position:absolute;left:31px;top:80px;width:2px;height:24px;background:#868e96}
+.balloon.popped{animation-play-state:paused}
+.balloon.popped .bi{animation:burst .25s forwards}
+@keyframes rise{to{transform:translateY(-1000px)}}
+@keyframes burst{to{transform:scale(1.7);opacity:0}}
+
+/* xo */
+.xo{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:360px;margin:0 auto 16px}
+.xcell{aspect-ratio:1;border:0;border-radius:20px;background:var(--card);font-size:clamp(40px,13vw,64px);box-shadow:var(--shadow);cursor:pointer;padding:0}
+.msg{font-size:24px;font-weight:700;text-align:center;margin:0 0 14px;min-height:36px}
+
+/* quizzes */
+.q{background:var(--card);border-radius:26px;box-shadow:var(--shadow);padding:20px;text-align:center;margin-bottom:18px}
+.q p{margin:0 0 8px;font-size:22px;color:var(--muted)}
+.count{font-size:clamp(34px,10vw,52px);line-height:1.3;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 10px}
+.eq{font-size:clamp(48px,15vw,84px);font-weight:800;direction:ltr}
+.swatch{width:150px;height:150px;border-radius:50%;margin:6px auto;border:6px solid #fff;box-shadow:0 0 0 3px #dee2e6}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:520px;margin:auto}
+.opt{border:0;border-radius:20px;padding:14px 6px;font-size:clamp(26px,8vw,40px);font-weight:800;background:var(--card);box-shadow:var(--shadow);cursor:pointer}
+.opt.right{background:var(--ok);color:#fff;animation:jump .4s}
+.opt.wrong{background:#ffe3e3;color:var(--no);animation:shake .35s}
+@keyframes jump{50%{transform:translateY(-10px) scale(1.06)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+
+/* draw */
+.tools{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px}
+.sw{width:42px;height:42px;border-radius:50%;border:4px solid #fff;box-shadow:0 0 0 2px #ced4da;cursor:pointer;padding:0}
+.sw.sel{box-shadow:0 0 0 4px var(--ink);transform:scale(1.1)}
+.tool{border:0;background:var(--card);border-radius:14px;padding:4px 12px;font-size:20px;font-weight:700;box-shadow:var(--shadow);cursor:pointer}
+.tool.sel{background:var(--ink);color:#fff}
+#cv{width:100%;height:60vh;min-height:340px;background:#fff;border-radius:22px;box-shadow:var(--shadow);touch-action:none;display:block;cursor:crosshair}
+
+/* win overlay */
+.over{position:fixed;inset:0;background:rgba(59,47,92,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:10}
+.over.on{display:flex}
+.win{background:var(--card);border-radius:30px;padding:26px 22px;text-align:center;max-width:380px;width:100%;animation:popin .35s}
+.win .big{font-size:80px;line-height:1}
+.win h3{font-size:30px;margin:6px 0}
+.win p{font-size:22px;margin:0 0 6px}
+.win .st{font-size:40px;letter-spacing:4px;margin-bottom:16px}
+.win .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+@keyframes popin{from{transform:scale(.6);opacity:0}}
+.confetti{position:fixed;top:-50px;font-size:30px;pointer-events:none;z-index:11;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎈 ألعاب الأطفال</h1>
+  <div class="head-tools">
+    <div class="pill" title="نجومك">⭐ <b id="stars">0</b></div>
+    <button class="icon-btn" id="soundBtn" aria-label="الصوت">🔊</button>
+  </div>
+</header>
+
+<main>
+  <!-- home -->
+  <section class="screen on" id="home">
+    <p class="hello">اختار لعبة وابدأ فوراً! 👇</p>
+    <div class="grid">
+      <a class="tile" href="#memory"   style="background:var(--c5)"><span>🧠</span>الذاكرة<small>لاقي الصور المتشابهة</small></a>
+      <a class="tile" href="#balloons" style="background:var(--c1)"><span>🎈</span>البالونات<small>افقع أكبر عدد</small></a>
+      <a class="tile" href="#xo"       style="background:var(--c2)"><span>❌⭕</span>إكس أو<small>العب ضد الكمبيوتر</small></a>
+      <a class="tile" href="#count"    style="background:var(--c3)"><span>🍎</span>عُدّ معي<small>كم واحد في؟</small></a>
+      <a class="tile" href="#math"     style="background:var(--c4)"><span>➕</span>الحساب<small>جمع وطرح سهل</small></a>
+      <a class="tile" href="#colors"   style="background:var(--c7)"><span>🎨</span>الألوان<small>شو اسم اللون؟</small></a>
+      <a class="tile" href="#draw"     style="background:var(--c6)"><span>🖍️</span>ارسم<small>لوح رسم حر</small></a>
+    </div>
+    <footer>بدون تسجيل دخول • بدون إعلانات • بتشتغل عالجوال والكمبيوتر</footer>
+  </section>
+
+  <section class="screen" id="memory">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>🧠 الذاكرة</h2><div class="pill" id="memMoves"></div></div>
+    <div class="mem" id="memBoard"></div>
+  </section>
+
+  <section class="screen" id="balloons">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>🎈 البالونات</h2><div class="pill" id="balScore"></div><div class="pill" id="balTime"></div></div>
+    <div class="sky" id="balArea"></div>
+  </section>
+
+  <section class="screen" id="xo">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>❌⭕ إكس أو</h2><button class="btn" id="xoNew">لعبة جديدة</button></div>
+    <p class="msg" id="xoMsg"></p>
+    <div class="xo" id="xoBoard"></div>
+  </section>
+
+  <section class="screen" id="count">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>🍎 عُدّ معي</h2><div class="pill" id="countP"></div></div>
+    <div class="q" id="countQ"></div>
+    <div class="opts" id="countO"></div>
+  </section>
+
+  <section class="screen" id="math">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>➕ الحساب</h2><div class="pill" id="mathP"></div></div>
+    <div class="q" id="mathQ"></div>
+    <div class="opts" id="mathO"></div>
+  </section>
+
+  <section class="screen" id="colors">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>🎨 الألوان</h2><div class="pill" id="colorsP"></div></div>
+    <div class="q" id="colorsQ"></div>
+    <div class="opts" id="colorsO"></div>
+  </section>
+
+  <section class="screen" id="draw">
+    <div class="bar"><a class="back" href="#">→ رجوع</a><h2>🖍️ ارسم</h2><button class="btn" id="cvClear" style="background:var(--c1)">امسح الكل</button></div>
+    <div class="tools" id="cvTools"></div>
+    <canvas id="cv"></canvas>
+  </section>
+</main>
+
+<div class="over" id="over">
+  <div class="win">
+    <div class="big">🏆</div>
+    <h3>أحسنت!</h3>
+    <p id="winText"></p>
+    <div class="st" id="winStars"></div>
+    <div class="row">
+      <button class="btn" id="againBtn" style="background:var(--c3)">العب كمان</button>
+      <a class="btn" href="#" id="menuBtn" style="background:var(--c5)">الألعاب</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const rnd = n => Math.floor(Math.random() * n);
+const pick = a => a[rnd(a.length)];
+const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+/* ---------- storage (optional; works without it) ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+let stars = store.get('kg-stars', 0);
+let soundOn = store.get('kg-sound', true);
+$('#stars').textContent = stars;
+$('#soundBtn').textContent = soundOn ? '🔊' : '🔇';
+$('#soundBtn').onclick = () => {
+  soundOn = !soundOn; store.set('kg-sound', soundOn);
+  $('#soundBtn').textContent = soundOn ? '🔊' : '🔇';
+};
+
+/* ---------- sounds (Web Audio, no files) ---------- */
+let ac;
+function tone(freqs, dur = .12, type = 'sine') {
+  if (!soundOn) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const t = ac.currentTime;
+    freqs.forEach((f, i) => {
+      const o = ac.createOscillator(), g = ac.createGain();
+      o.type = type; o.frequency.value = f;
+      g.gain.setValueAtTime(.18, t + i * dur);
+      g.gain.exponentialRampToValueAtTime(.001, t + (i + 1) * dur);
+      o.connect(g).connect(ac.destination);
+      o.start(t + i * dur); o.stop(t + (i + 1) * dur);
+    });
+  } catch (e) {}
+}
+const good = () => tone([523, 659, 784]);
+const bad  = () => tone([300, 220], .15, 'square');
+const pop  = () => tone([880], .06, 'triangle');
+const fanfare = () => tone([523, 659, 784, 1047], .16);
+
+/* ---------- navigation ---------- */
+let current = 'home', cleanup = null;
+const games = { memory, balloons, xo, count, math, colors, draw };
+
+function stopGame() { if (cleanup) { cleanup(); cleanup = null; } }
+function startGame() { stopGame(); cleanup = games[current]() || null; }
+
+function route() {
+  const name = location.hash.slice(1);
+  current = games[name] ? name : 'home';
+  stopGame();
+  $('#over').classList.remove('on');
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('on', s.id === current));
+  scrollTo(0, 0);
+  if (current !== 'home') startGame();
+}
+addEventListener('hashchange', route);
+
+function celebrate(text, n) {
+  stars += n; store.set('kg-stars', stars); $('#stars').textContent = stars;
+  $('#winText').textContent = text;
+  $('#winStars').textContent = '⭐'.repeat(n);
+  $('#over').classList.add('on');
+  fanfare();
+  for (let i = 0; i < 30; i++) {
+    const c = document.createElement('span');
+    c.className = 'confetti';
+    c.textContent = pick(['🎉', '⭐', '🎈', '🌟', '🍬', '💖']);
+    c.style.left = rnd(100) + 'vw';
+    c.style.animationDuration = (1.8 + Math.random() * 1.8) + 's';
+    c.style.animationDelay = (Math.random() * .6) + 's';
+    document.body.appendChild(c);
+    c.addEventListener('animationend', () => c.remove());
+  }
+}
+$('#againBtn').onclick = () => { $('#over').classList.remove('on'); startGame(); };
+
+/* ---------- 1. memory ---------- */
+function memory() {
+  const pool = ['🐶', '🐱', '🐰', '🦁', '🐸', '🐵', '🐼', '🐷', '🐮', '🦊', '🐯', '🐨', '🐧', '🦄'];
+  const pairs = shuffle(pool).slice(0, 6);
+  const board = $('#memBoard');
+  let first = null, lock = false, moves = 0, found = 0;
+  board.innerHTML = '';
+  $('#memMoves').textContent = 'محاولات: 0';
+  shuffle([...pairs, ...pairs]).forEach(e => {
+    const c = document.createElement('button');
+    c.className = 'mcard';
+    c.innerHTML = '<span class="fr">❓</span><span class="bk">' + e + '</span>';
+    c.onclick = () => {
+      if (lock || c.classList.contains('open')) return;
+      c.classList.add('open'); pop();
+      if (!first) { first = c; return; }
+      moves++; $('#memMoves').textContent = 'محاولات: ' + moves;
+      if (first.dataset.e === e) {
+        first.classList.add('done'); c.classList.add('done'); first = null; found++; good();
+        if (found === pairs.length) setTimeout(() => celebrate('لقيت كل الأزواج بـ ' + moves + ' محاولة!', moves <= 10 ? 3 : moves <= 16 ? 2 : 1), 400);
+      } else {
+        lock = true; const f = first; first = null;
+        setTimeout(() => { f.classList.remove('open'); c.classList.remove('open'); lock = false; }, 850);
+      }
+    };
+    c.dataset.e = e;
+    board.appendChild(c);
+  });
+}
+
+/* ---------- 2. balloons ---------- */
+function balloons() {
+  const area = $('#balArea'), colors = ['#ff6b6b', '#4dabf7', '#51cf66', '#fcc419', '#cc5de8', '#ff922b', '#f06595'];
+  let score = 0, time = 30;
+  area.innerHTML = '';
+  $('#balScore').textContent = '🎈 0';
+  $('#balTime').textContent = '⏱ 30';
+  const spawn = setInterval(() => {
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    b.style.left = (3 + Math.random() * 80) + '%';
+    b.style.animationDuration = (4 + Math.random() * 3) + 's';
+    b.innerHTML = '<div class="bi" style="background:' + pick(colors) + '"></div>';
+    b.addEventListener('pointerdown', () => {
+      if (b.classList.contains('popped')) return;
+      b.classList.add('popped'); score++; pop();
+      $('#balScore').textContent = '🎈 ' + score;
+      setTimeout(() => b.remove(), 260);
+    });
+    b.addEventListener('animationend', e => { if (e.animationName === 'rise') b.remove(); });
+    area.appendChild(b);
+  }, 650);
+  const timer = setInterval(() => {
+    time--; $('#balTime').textContent = '⏱ ' + time;
+    if (time <= 0) { stop(); celebrate('فقعت ' + score + ' بالون!', score >= 25 ? 3 : score >= 12 ? 2 : 1); }
+  }, 1000);
+  function stop() { clearInterval(spawn); clearInterval(timer); area.innerHTML = ''; }
+  return stop;
+}
+
+/* ---------- 3. tic-tac-toe ---------- */
+function xo() {
+  const board = $('#xoBoard'), msg = $('#xoMsg');
+  const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  let cells = Array(9).fill(''), busy = false, over = false, timeout;
+  const winner = c => {
+    for (const [a, b, d] of lines) if (c[a] && c[a] === c[b] && c[a] === c[d]) return c[a];
+    return c.every(Boolean) ? 'draw' : null;
+  };
+  function render() {
+    board.innerHTML = '';
+    cells.forEach((v, i) => {
+      const x = document.createElement('button');
+      x.className = 'xcell'; x.textContent = v;
+      x.onclick = () => play(i);
+      board.appendChild(x);
+    });
+  }
+  function check() {
+    const w = winner(cells);
+    render();
+    if (w === '❌') { over = true; msg.textContent = 'فزت! 🎉'; setTimeout(() => celebrate('فزت على الكمبيوتر!', 3), 400); }
+    else if (w === '⭕') { over = true; msg.textContent = 'فاز الكمبيوتر، جرّب كمان مرة 💪'; bad(); }
+    else if (w === 'draw') { over = true; msg.textContent = 'تعادل! 🤝'; tone([440, 440], .12); }
+    else msg.textContent = 'دورك ❌';
+    return !!w;
+  }
+  function ai() {
+    const free = cells.map((v, i) => v ? -1 : i).filter(i => i >= 0);
+    if (Math.random() < .35) return pick(free); // sometimes a silly move, so kids can win
+    for (const s of ['⭕', '❌']) for (const i of free) { const t = [...cells]; t[i] = s; if (winner(t) === s) return i; }
+    return cells[4] ? pick(free) : 4;
+  }
+  function play(i) {
+    if (over || busy || cells[i]) return;
+    cells[i] = '❌'; pop();
+    if (check()) return;
+    busy = true; msg.textContent = 'الكمبيوتر بيفكر... 🤔';
+    timeout = setTimeout(() => { cells[ai()] = '⭕'; tone([440], .08); busy = false; check(); }, 550);
+  }
+  function reset() { clearTimeout(timeout); cells = Array(9).fill(''); busy = over = false; check(); }
+  $('#xoNew').onclick = reset;
+  reset();
+  return () => clearTimeout(timeout);
+}
+
+/* ---------- quiz engine (count / math / colors) ---------- */
+function choices(answer, n, gen) {
+  const s = new Set([answer]);
+  while (s.size < n) s.add(gen());
+  return shuffle([...s]);
+}
+function quiz(id, make) {
+  const box = $('#' + id + 'Q'), opts = $('#' + id + 'O'), prog = $('#' + id + 'P');
+  let round = 0, score = 0, t;
+  function next() {
+    if (round === 10) { celebrate('جاوبت ' + score + ' من 10 صح من أول مرة!', score >= 9 ? 3 : score >= 6 ? 2 : 1); return; }
+    round++;
+    prog.textContent = round + ' / 10';
+    const q = make();
+    let done = false, missed = false;
+    box.innerHTML = q.html;
+    opts.innerHTML = '';
+    q.options.forEach(o => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = q.label ? q.label(o) : o;
+      b.onclick = () => {
+        if (done) return;
+        if (o === q.answer) { done = true; b.classList.add('right'); if (!missed) score++; good(); t = setTimeout(next, 900); }
+        else { missed = true; b.classList.add('wrong'); b.disabled = true; bad(); }
+      };
+      opts.appendChild(b);
+    });
+  }
+  next();
+  return () => clearTimeout(t);
+}
+
+/* ---------- 4. counting ---------- */
+function count() {
+  const things = ['🍎', '⭐', '🐟', '🌸', '🚗', '🍌', '🐞', '⚽', '🦋', '🍓'];
+  return quiz('count', () => {
+    const n = 1 + rnd(10), e = pick(things);
+    return {
+      html: '<p>عُدّ… كم واحد في؟</p><div class="count">' + ('<span>' + e + '</span>').repeat(n) + '</div>',
+      answer: n,
+      options: choices(n, 3, () => 1 + rnd(10))
+    };
+  });
+}
+
+/* ---------- 5. math ---------- */
+function math() {
+  return quiz('math', () => {
+    let a, b, ans, op;
+    if (Math.random() < .5) { a = 1 + rnd(5); b = 1 + rnd(5); ans = a + b; op = '+'; }
+    else { a = 2 + rnd(9); b = 1 + rnd(a - 1); ans = a - b; op = '−'; }
+    return {
+      html: '<p>شو الجواب؟</p><div class="eq">' + a + ' ' + op + ' ' + b + ' = ?</div>',
+      answer: ans,
+      options: choices(ans, 3, () => rnd(11))
+    };
+  });
+}
+
+/* ---------- 6. colors ---------- */
+function colors() {
+  const list = [['أحمر', '#e03131'], ['أزرق', '#1c7ed6'], ['أخضر', '#2f9e44'], ['أصفر', '#fcc419'], ['برتقالي', '#fd7e14'],
+                ['بنفسجي', '#9c36b5'], ['وردي', '#f783ac'], ['بني', '#8d5524'], ['أسود', '#212529'], ['أبيض', '#ffffff']];
+  let last;
+  return quiz('colors', () => {
+    let c; do c = pick(list); while (c === last); last = c;
+    return {
+      html: '<p>شو اسم هاد اللون؟</p><div class="swatch" style="background:' + c[1] + '"></div>',
+      answer: c[0],
+      options: choices(c[0], 3, () => pick(list)[0])
+    };
+  });
+}
+
+/* ---------- 7. drawing ---------- */
+function draw() {
+  const cv = $('#cv'), ctx = cv.getContext('2d'), tools = $('#cvTools');
+  const palette = ['#e03131', '#fd7e14', '#fcc419', '#2f9e44', '#1c7ed6', '#9c36b5', '#f783ac', '#8d5524', '#212529'];
+  let color = palette[0], size = 10, down = false, last;
+  const r = cv.getBoundingClientRect(), d = devicePixelRatio || 1;
+  cv.width = r.width * d; cv.height = r.height * d;
+  ctx.setTransform(d, 0, 0, d, 0, 0);
+  ctx.lineCap = ctx.lineJoin = 'round';
+  const clear = () => { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, r.width, r.height); };
+  clear();
+  $('#cvClear').onclick = () => { clear(); pop(); };
+
+  tools.innerHTML = '';
+  const select = (el, cls) => { tools.querySelectorAll(cls).forEach(x => x.classList.remove('sel')); el.classList.add('sel'); };
+  palette.concat('#ffffff').forEach((c, i) => {
+    const b = document.createElement('button');
+    b.className = 'sw' + (i === 0 ? ' sel' : '');
+    b.style.background = c;
+    if (c === '#ffffff') { b.textContent = '🧽'; b.title = 'ممحاة'; }
+    b.onclick = () => { color = c; select(b, '.sw'); };
+    tools.appendChild(b);
+  });
+  [['رفيع', 5], ['وسط', 10], ['عريض', 22]].forEach(([n, s]) => {
+    const b = document.createElement('button');
+    b.className = 'tool' + (s === size ? ' sel' : '');
+    b.textContent = n;
+    b.onclick = () => { size = s; select(b, '.tool'); };
+    tools.appendChild(b);
+  });
+
+  const at = e => { const b = cv.getBoundingClientRect(); return [e.clientX - b.left, e.clientY - b.top]; };
+  const line = (p, q) => { ctx.strokeStyle = color; ctx.lineWidth = size; ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(q[0], q[1]); ctx.stroke(); };
+  cv.onpointerdown = e => { down = true; cv.setPointerCapture(e.pointerId); last = at(e); line(last, last); };
+  cv.onpointermove = e => { if (!down) return; const p = at(e); line(last, p); last = p; };
+  cv.onpointerup = cv.onpointercancel = () => { down = false; };
+}
+
+route();
+</script>
+</body>
+</html>
